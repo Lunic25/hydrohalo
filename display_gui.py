@@ -17,7 +17,6 @@ import sys
 import json
 import threading
 import time
-import traceback
 from datetime import datetime
 import platform
 import tkinter as tk
@@ -455,28 +454,3 @@ class HydroHaloGUI:
             pass
         self.root.destroy()
 
-# --------- Main entrypoint ----------
-def main():
-    settings = load_settings()
-    # show warning if on Pi but GPIO disabled
-    if ON_PI and not settings.get("use_gpio", False):
-        print("ℹ️ Running on Pi with GPIO disabled in settings (safe default).")
-
-    root = tk.Tk()
-    app = HydroHaloGUI(root, settings)
-    try:
-        root.mainloop()
-    except KeyboardInterrupt:
-        print("Interrupted")
-    except Exception:
-        traceback.print_exc()
-    finally:
-        # ensure motor stopped on exit
-        try:
-            app.motor.stop()
-        except Exception:
-            pass
-        print("Shutdown complete")
-
-if __name__ == "__main__":
-    main()
