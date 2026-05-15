@@ -73,26 +73,6 @@ class ResistanceGUI:
         ).pack(side="bottom", pady=20)
 
 
-if __name__ == "__main__":
-    controller = MotorController("/dev/ttyUSB0")
-    root = tk.Tk()
-    app = ResistanceGUI(root, controller)
-    root.mainloop()
-
-while True:
-    pull_force = read_force_sensor()
-    line_position = read_line_position()
-    
-    # Emergency stop if no pull or line near base
-    if pull_force <= 0 or line_position <= 1.52:
-        stop_motor()
-        shutdown_cycle()
-        break
-    
-    # Normal operation
-    desired_current = map_resistance_level_to_current(user_selected_level)
-    set_motor_current(desired_current)
-
 # vesc_control_safety
 import time
 import math
@@ -242,10 +222,3 @@ def main_loop(user_selected_current):
     except KeyboardInterrupt:
         print("User requested KeyboardInterrupt, stopping motor.")
         stop_motor()
-
-if __name__ == "__main__":
-    # Example usage: user selects a resistance that corresponds to +5 A torque opposing the pull
-    USER_SELECTED_CURRENT_A = 5.0
-    main_loop(USER_SELECTED_CURRENT_A)
-
-    #How can I test this?
