@@ -1,26 +1,23 @@
-name: Build and Push Container
+name: Launch Pi 5 GUI Application
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  launch-gui:
+    runs-on: self-hosted
+
     steps:
-      - name: Checkout code
+      - name: Fetch repository updates
         uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+      - name: Force GUI to appear on local Pi Monitor
+        run: |
+          # 1. Authorize the internal runner to draw on the local desktop session
+          export XDG_RUNTIME_DIR=/run/user/1000
+          export WAYLAND_DISPLAY=wayland-0
+          export DISPLAY=:0
+          
+          # 2. Run your code in the background so the action step doesn't freeze
+          python3 main.py &
