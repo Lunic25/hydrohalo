@@ -52,7 +52,7 @@ class MotorController:
             print(f'[SIM] Motor set to {level}')
             return
         if self.mode == 'vesc_serial':
-            self.vesc.set_current(float(level))
+            self.vesc.set_current(level)
             return
         print(f'⚠️ Unknown motor mode: {self.mode}')
 
