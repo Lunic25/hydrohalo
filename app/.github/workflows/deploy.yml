@@ -1,23 +1,22 @@
-name: Launch Pi 5 GUI Application
+name: Deploy to Pi
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  launch-gui:
+  deploy:
     runs-on: self-hosted
-
     steps:
-      - name: Fetch repository updates
-        uses: actions/checkout@v4
-
-      - name: Force GUI to appear on local Pi Monitor
+      - name: Pull latest code
         run: |
-          # 1. Authorize the internal runner to draw on the local desktop session
-          export XDG_RUNTIME_DIR=/run/user/1000
-          export WAYLAND_DISPLAY=wayland-0
-          export DISPLAY=:0
-          
-          # 2. Run your code in the background so the action step doesn't freeze
-          python3 main.py &
+          cd /home/pi/hydrohalo
+          git pull origin main
+
+      - name: Install/update dependencies
+        run: |
+          pip3 install -r /home/pi/hydrohalo/requirements.txt --break-system-packages
+
+      - name: Restart app via systemd
+        run: |
+          sudo systemctl restart hydrohalo
