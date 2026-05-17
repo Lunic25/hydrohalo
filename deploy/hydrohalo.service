@@ -1,0 +1,20 @@
+[Unit]
+Description=HydroHalo Touchscreen Kiosk
+After=graphical.target network-online.target
+Wants=graphical.target network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/opt/hydrohalo
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/env python3 -m app.main
+Restart=always
+RestartSec=2
+StandardOutput=append:/var/log/hydrohalo/hydrohalo.out.log
+StandardError=append:/var/log/hydrohalo/hydrohalo.err.log
+KillSignal=SIGTERM
+TimeoutStopSec=10
+
+[Install]
+WantedBy=graphical.target
