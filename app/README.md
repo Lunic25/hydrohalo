@@ -92,3 +92,45 @@ On trip:
 2. Enable hardware testing mode and low current limits.
 3. Observe telemetry statistics and watchdog events while incrementally increasing load.
 4. Validate emergency stop latency and packet-drop behavior.
+
+## Raspberry Pi Touchscreen Kiosk Deployment
+
+### Startup flow
+1. Raspberry Pi boots to graphical target.
+2. `hydrohalo.service` starts automatically.
+3. HydroHalo initializes logging/config in `app/main.py`.
+4. App applies safe startup policy (IDLE + motor stop).
+5. Splash screen displays centered logo on black background for ~2.5 seconds.
+6. Main fullscreen touchscreen GUI appears.
+
+### Production mode behavior
+`AppSettings.production_mode=True` enforces kiosk constraints:
+- fullscreen forced
+- Escape key ignored
+- cursor hidden (if enabled)
+- simulation mode disabled unless `allow_simulation_in_production=True`
+
+### Raspberry Pi setup
+1. Copy repo to `/opt/hydrohalo`.
+2. Run installer:
+   ```bash
+   sudo bash deploy/install.sh
+   ```
+3. Verify service:
+   ```bash
+   systemctl status hydrohalo.service
+   ```
+4. Reboot and confirm kiosk auto-launch.
+
+### Touchscreen optimization notes
+- UI targets are enlarged for 5-inch display use.
+- Primary controls are large, high-contrast buttons.
+- Layout is optimized for landscape orientation.
+- Cursor hiding is supported for kiosk feel.
+
+### Troubleshooting
+- Service logs:
+  - `/var/log/hydrohalo/hydrohalo.out.log`
+  - `/var/log/hydrohalo/hydrohalo.err.log`
+- If hardware is unavailable in production mode, HydroHalo stays fail-safe and motor output remains disabled.
+- If GUI crashes, systemd restarts the app automatically.
