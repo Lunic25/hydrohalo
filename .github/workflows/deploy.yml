@@ -17,37 +17,6 @@ jobs:
         run: |
           pip3 install -r /home/lunic21/hydrohalo/requirements.txt --break-system-packages
 
-      - name: Restart app via systemd
-        run: |
-          sudo systemctl restart hydrohalo
-name: Deploy to Pi
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: self-hosted
-    steps:
-      - name: Pull latest code
-        run: |
-          cd /home/lunic21/hydrohalo
-          git pull origin main
-
-      - name: Install/update dependencies
-        run: |
-          pip3 install -r /home/lunic21/hydrohalo/requirements.txt --break-system-packages
-
       - name: Install kiosk system dependencies
         run: |
-          sudo apt-get install -y xserver-xorg-core xinit x11-xserver-utils unclutter python3-tk
-
-      - name: Set execute permissions on kiosk scripts
-        run: |
-          chmod +x /home/lunic21/hydrohalo/deploy/kiosk_start.sh
-          chmod +x /home/lunic21/hydrohalo/deploy/xinitrc
-
-      - name: Restart app via systemd
-        run: |
-          sudo systemctl restart hydrohalo
+          sudo apt-get install -y xserver-xorg-core xinit x11-xs
