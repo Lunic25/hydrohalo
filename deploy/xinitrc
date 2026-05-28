@@ -1,0 +1,2 @@
+#!/bin/bash
+exec /home/lunic21/hydrohalo/deploy/kiosk_start.sh
